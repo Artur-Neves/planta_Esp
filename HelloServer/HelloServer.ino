@@ -8,14 +8,14 @@
 #define DHT_PIN 2       // Defina o pino ao qual o sensor KY-015 está conectado
 #define DHT_TYPE DHT11  // Dependendo do modelo do sensor, pode ser DHT11, DHT21 ou DHT22
 
-
 #endif
 
 
 DHT dht(DHT_PIN, DHT_TYPE);
 const int pinSensorUmidadeSolo = A0;
-const char* ssid = "DESKTOP-KJ4SKES 6992";
-const char* password = "12345678";
+const char* ssid = "iPhone de Daniel";
+const char* password = "20212022@";
+char *token;
 
 ESP8266WebServer server(80);
 
@@ -34,7 +34,7 @@ void handleRoot() {
    int valorAnalogico = analogRead(pinSensorUmidadeSolo);
     float umidadeSolo = map(valorAnalogico, 0, 1023, 0, 100);
   String umidadedsolo = ""+String(100-umidadeSolo)+"%";
-String texto = "Temperatura: "+ String(temperature)+ "C\nUmidade: "+String(umidade)+"\nUmidade do solo: "+ umidadedsolo+ "\n iluminosidade "+String(iluminosidade());
+String texto = "Temperatura: "+ String(temperature)+ "C\nUmidade: "+String(umidade)+"\nUmidade do solo: "+ umidadedsolo+ "\niluminosidade "+iluminosidade()+"\ntemperatura do solo "+p100();
   if (isnan(temperature)) {
     Serial.println("Falha ao ler a temperatura!");
   } else {
@@ -181,14 +181,9 @@ void setup(void) {
 
   server.begin();
   Serial.println("HTTP server started");
+    
 }
 
-void loop(void) {
-  plantaIdeal();
-  server.handleClient();
-  MDNS.update();
-  iluminosidade();
-}
 void plantaIdeal(){
   int valorAnalogico = analogRead(pinSensorUmidadeSolo);
    float temp = map(valorAnalogico, 0, 1023, 0, 100);
@@ -199,25 +194,75 @@ digitalWrite(15, HIGH);
   else {
 digitalWrite(15, LOW);
 
+
   }
  
   
   
   delay(1000);
 }
-int iluminosidade(){
- if (Serial.available()) {
-    String input = Serial.readStringUntil('\n'); // Lê a string até encontrar um caractere de nova linha
+String input; // Variável global para armazenar a leitura da porta serial
 
-    // Verifica se a string não está vazia
-    if (input.length() > 0) {
-        int numeroRecebido = input.toInt(); // Converte a string para um número inteiro
-
-        // Agora você pode comparar o número recebido com o que deseja
-        
-            Serial.println(numeroRecebido);
-        return numeroRecebido;
-    }
+String readSerialLine() {
+  if (Serial.available()) {
+    String line = Serial.readStringUntil('\n');
+    line.trim(); // Remove espaços em branco extras do início e do fim
+    return line;
+  }
+  return ""; // Retorna uma string vazia se nada estiver disponível
 }
-return 0;
+
+int iluminosidade() {
+  if (input.length() > 0) {
+    // Usa indexOf para encontrar a posição do "-"
+    int pos = input.indexOf('-');
+
+    if (pos != -1) {
+      // Obtém a parte da string antes do "-"
+      String parte1 = input.substring(0, pos);
+
+      // Converte a parte antes do "-" em um número inteiro
+      int numeroRecebido = parte1.toInt();
+
+      // Agora você pode usar o número inteiro conforme necessário
+      return numeroRecebido;
+    }
+  }
+  return 0;
+}
+
+float p100() {
+  if (input.length() > 0) {
+    // Usa indexOf para encontrar a posição do "-"
+    int pos = input.indexOf('-');
+
+    if (pos != -1 && pos < input.length() - 1) {
+      // Obtém a parte da string após o "-"
+      String parte2 = input.substring(pos + 1);
+
+      // Converte a parte após o "-" em um número de ponto flutuante (float)
+      float valor = parte2.toFloat();
+
+      // Agora você pode usar o valor de ponto flutuante conforme necessário
+      return valor;
+    }
+  }
+  return 0.0; // Valor padrão em caso de erro
+}
+
+
+
+void loop(void) {
+  plantaIdeal();
+  server.handleClient();
+  MDNS.update();
+  
+  // Leia a linha da porta serial e armazene na variável input
+  input = readSerialLine();
+  
+  // Chame os métodos iluminosidade e p100 para processar a mesma linha
+  int valorIluminosidade = iluminosidade();
+  float valorP100 = p100();
+  
+  // Use os valores conforme necessário
 }
