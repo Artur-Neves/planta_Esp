@@ -34,7 +34,7 @@ void handleRoot() {
    int valorAnalogico = analogRead(pinSensorUmidadeSolo);
     float umidadeSolo = map(valorAnalogico, 0, 1023, 0, 100);
   String umidadedsolo = ""+String(100-umidadeSolo)+"%";
-String texto = "Temperatura: "+ String(temperature)+ "C\nUmidade: "+String(umidade)+"\nUmidade do solo: "+ umidadedsolo+ "\niluminosidade "+iluminosidade()+"\ntemperatura do solo "+p100();
+String texto = "Temperatura: "+ String(temperature)+ "C\nUmidade: "+String(umidade)+"\nUmidade do solo: "+ umidadedsolo+ "\niluminosidade "+iluminosidade()+"\ntemperatura do solo "+p100()+"\nSensor de fluxo"+String(Volume_Agua());
   if (isnan(temperature)) {
     Serial.println("Falha ao ler a temperatura!");
   } else {
@@ -203,54 +203,63 @@ digitalWrite(15, LOW);
 }
 String input; // Variável global para armazenar a leitura da porta serial
 
+
+String iluminosidade() {
+  if (input.length() > 0) {
+    // Usa indexOf para encontrar a posição do primeiro "-"
+    int pos1 = input.indexOf('-');
+
+    if (pos1 != -1) {
+      // Obtém a parte da string antes do primeiro "-"
+      String parte1 = input.substring(0, pos1);
+
+      return parte1;
+    }
+  }
+  return ""; // Retorna uma string vazia se não puder encontrar a parte
+}
+
+String p100() {
+  if (input.length() > 0) {
+    // Usa indexOf para encontrar a posição do segundo "-"
+    int pos2 = input.lastIndexOf('-');
+
+    if (pos2 != -1) {
+      // Obtém a parte da string após o segundo "-"
+      String parte2 = input.substring(pos2 + 1);
+
+      return parte2;
+    }
+  }
+  return ""; // Retorna uma string vazia se não puder encontrar a parte
+}
+
+
+String Volume_Agua() {
+  if (input.length() > 0) {
+    // Usa indexOf para encontrar a posição do terceiro "-"
+    int pos3 = input.lastIndexOf('-');
+
+    if (pos3 != -1) {
+      // Obtém a parte da string após o terceiro "-"
+      String parte3 = input.substring(pos3 + 1);
+
+      return parte3;
+    }
+  }
+  return ""; // Retorna uma string vazia se não puder encontrar a parte
+}
+
+
 String readSerialLine() {
+  String line = "";
+
   if (Serial.available()) {
-    String line = Serial.readStringUntil('\n');
+    line = Serial.readStringUntil('\n');
     line.trim(); // Remove espaços em branco extras do início e do fim
-    return line;
   }
-  return ""; // Retorna uma string vazia se nada estiver disponível
+  return line;
 }
-
-int iluminosidade() {
-  if (input.length() > 0) {
-    // Usa indexOf para encontrar a posição do "-"
-    int pos = input.indexOf('-');
-
-    if (pos != -1) {
-      // Obtém a parte da string antes do "-"
-      String parte1 = input.substring(0, pos);
-
-      // Converte a parte antes do "-" em um número inteiro
-      int numeroRecebido = parte1.toInt();
-
-      // Agora você pode usar o número inteiro conforme necessário
-      return numeroRecebido;
-    }
-  }
-  return 0;
-}
-
-float p100() {
-  if (input.length() > 0) {
-    // Usa indexOf para encontrar a posição do "-"
-    int pos = input.indexOf('-');
-
-    if (pos != -1 && pos < input.length() - 1) {
-      // Obtém a parte da string após o "-"
-      String parte2 = input.substring(pos + 1);
-
-      // Converte a parte após o "-" em um número de ponto flutuante (float)
-      float valor = parte2.toFloat();
-
-      // Agora você pode usar o valor de ponto flutuante conforme necessário
-      return valor;
-    }
-  }
-  return 0.0; // Valor padrão em caso de erro
-}
-
-
 
 void loop(void) {
   plantaIdeal();
@@ -260,9 +269,15 @@ void loop(void) {
   // Leia a linha da porta serial e armazene na variável input
   input = readSerialLine();
   
-  // Chame os métodos iluminosidade e p100 para processar a mesma linha
-  int valorIluminosidade = iluminosidade();
-  float valorP100 = p100();
+  // Chame os métodos iluminosidade, p100 e Volume_Agua para processar a mesma linha
+  String valorIluminosidade = iluminosidade();
+  String valorP100 = p100();
+  String valorVolumeAgua = Volume_Agua();
+
+  // Depuração: Verifique os valores retornados
+  Serial.println("Iluminosidade: " + valorIluminosidade);
+  Serial.println("P100: " + valorP100);
+  Serial.println("Volume_Agua: " + valorVolumeAgua);
   
   // Use os valores conforme necessário
 }

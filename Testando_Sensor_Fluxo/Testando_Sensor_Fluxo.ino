@@ -1,6 +1,6 @@
 //definicao do pino do sensor e de interrupcao
-const int INTERRUPCAO_SENSOR = 0; //interrupt = 0 equivale ao pino digital 2
-const int PINO_SENSOR = 2;
+const int INTERRUPCAO_SENSOR = 1; //interrupt = 0 equivale ao pino digital 2
+const int PINO_SENSOR = 4;
 
 //definicao da variavel de contagem de voltas
 unsigned long contador = 0;
