@@ -187,6 +187,11 @@ void setup(void) {
 void plantaIdeal(){
   int valorAnalogico = analogRead(pinSensorUmidadeSolo);
    float temp = map(valorAnalogico, 0, 1023, 0, 100);
+   // 60 umidade quando a temperatura for 
+   // abaixo de 60 independente da temperatura
+   // apartir de uma temperatura que seria mais ou menos 40 graus ele rega ate a planta tiver usn 75% de umidade 
+   // apartir de 35 graus ambiente vai aumentar a temperatura da planta ate uns 75
+   //
   if (temp<40) {
 digitalWrite(15, HIGH);
 

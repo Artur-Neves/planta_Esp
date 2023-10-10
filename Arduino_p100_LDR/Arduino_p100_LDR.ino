@@ -21,6 +21,15 @@ float volume_total = 0;
 //definicao da variavel de intervalo de tempo
 unsigned long tempo_antes = 0;
 
+// variaveis de tempo 
+long segundos;
+long minutos;
+long horas;
+long segundost;
+long minutost;
+long horast;
+
+
 void setup() {
   Serial.begin(115200);
   pinMode(7, OUTPUT);
@@ -34,19 +43,7 @@ void setup() {
     
 
 void loop() { 
-  delay(80);
-  int valorAnalogico_LDR = analogRead(LDR);
-  float luminosidade = map(valorAnalogico_LDR, 0, 1023, 0, 100);
-  sensors.requestTemperatures();
-   LDR_AND_P100_Volume = String(luminosidade)+"-"+String(sensors.getTempCByIndex(0))+"-"+String(volume_agua());
-  Serial.println(LDR_AND_P100_Volume);
-if (luminosidade>85) {
-   digitalWrite(7, LOW);// turn relay ON
-}
-else{
-  digitalWrite(7, HIGH);// turn relay OFF
- delay(1000);// keep it OFF for 5 seconds
- }
+ principal();
 }
 
 float volume_agua(){
@@ -67,10 +64,7 @@ float volume_agua(){
     volume_total += volume;
 
     //exibicao do valor de volume
-    Serial.print("Volume: ");
-    Serial.print(volume_total);
-    Serial.println(" L");
-    Serial.println();
+
    
     //reinicializacao do contador de pulsos
     contador = 0;
@@ -84,6 +78,66 @@ float volume_agua(){
     
   
 }
+bool templigada() {
+  if (horas>=4){
+    return false;
+  }
+  else {
+segundos += 1 ;
+  if (segundos==3){
+    segundos = 0;
+    minutos+=1;
+      if(minutos==3){
+    minutos = 0;
+      horas+=1;
+  }}
+
+
+Serial.println("Tempo de luz ligada: "+String(horas)+":"+String(minutos)+":"+String(segundos));
+ return  true;}
+}
+void tempo_dia(){
+  segundost += 1 ;
+  if (segundost==3){
+    segundost = 0;
+    minutost+=1;
+      if(minutost==3){
+    minutost = 0;
+      horast+=1;
+    if (horast== 6){
+      horas=0;
+      segundos=0;
+      minutos=0;
+      horast=0;
+      segundost=0;
+      minutost=0;
+      Serial.println("novo dia ");
+    }}}
+    Serial.println("Tempo do dia: "+String(horast)+":"+String(minutost)+":"+String(segundost));
+    
+}
+void principal(){
+  tempo_dia();
+  delay(1000);
+  
+  int valorAnalogico_LDR = analogRead(LDR);
+  float luminosidade = map(valorAnalogico_LDR, 0, 1023, 0, 100);
+  sensors.requestTemperatures();
+   LDR_AND_P100_Volume = String(luminosidade)+"-"+String(sensors.getTempCByIndex(0))+"-"+String(volume_agua());
+  Serial.println(LDR_AND_P100_Volume);
+if (luminosidade>85) {
+  if(templigada()){
+   digitalWrite(7, LOW);// turn relay ON}
+
+}
+else {
+  digitalWrite(7, HIGH);// turn relay ON}
+}
+
+}
+else{
+  digitalWrite(7, HIGH);// turn relay ON}
+}}
 void contador_pulso() {
   
   contador++;
