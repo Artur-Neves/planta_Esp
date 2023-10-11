@@ -93,7 +93,7 @@ segundos += 1 ;
   }}
 
 
-Serial.println("Tempo de luz ligada: "+String(horas)+":"+String(minutos)+":"+String(segundos));
+//Serial.println("Tempo de luz ligada: "+String(horas)+":"+String(minutos)+":"+String(segundos));
  return  true;}
 }
 void tempo_dia(){
@@ -111,9 +111,9 @@ void tempo_dia(){
       horast=0;
       segundost=0;
       minutost=0;
-      Serial.println("novo dia ");
+      //Serial.println("novo dia ");
     }}}
-    Serial.println("Tempo do dia: "+String(horast)+":"+String(minutost)+":"+String(segundost));
+  //  Serial.println("Tempo do dia: "+String(horast)+":"+String(minutost)+":"+String(segundost));
     
 }
 void principal(){

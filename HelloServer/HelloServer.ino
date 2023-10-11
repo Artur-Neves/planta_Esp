@@ -13,8 +13,8 @@
 
 DHT dht(DHT_PIN, DHT_TYPE);
 const int pinSensorUmidadeSolo = A0;
-const char* ssid = "iPhone de Daniel";
-const char* password = "20212022@";
+const char* ssid = "EMBARCADOS";
+const char* password = "deumaoito";
 char *token;
 
 ESP8266WebServer server(80);
@@ -33,8 +33,9 @@ void handleRoot() {
   float umidade = dht.readHumidity();
    int valorAnalogico = analogRead(pinSensorUmidadeSolo);
     float umidadeSolo = map(valorAnalogico, 0, 1023, 0, 100);
-  String umidadedsolo = ""+String(100-umidadeSolo)+"%";
-String texto = "Temperatura: "+ String(temperature)+ "C\nUmidade: "+String(umidade)+"\nUmidade do solo: "+ umidadedsolo+ "\niluminosidade "+iluminosidade()+"\ntemperatura do solo "+p100()+"\nSensor de fluxo"+String(Volume_Agua());
+  String umidadedsolo = ""+String(100-umidadeSolo);
+  
+String texto =  String(temperature)+ "-"+String(umidade)+"-"+ umidadedsolo+ "-"+iluminosidade()+"-"+p100()+"-"+String(Volume_Agua());
   if (isnan(temperature)) {
     Serial.println("Falha ao ler a temperatura!");
   } else {
@@ -214,54 +215,31 @@ digitalWrite(15, LOW);
   }  delay(1000);}
 String input; // Variável global para armazenar a leitura da porta serial
 
-
 String iluminosidade() {
-  if (input.length() > 0) {
-    // Usa indexOf para encontrar a posição do primeiro "-"
-    int pos1 = input.indexOf('-');
-
-    if (pos1 != -1) {
-      // Obtém a parte da string antes do primeiro "-"
-      String parte1 = input.substring(0, pos1);
-
-      return parte1;
-    }
+  int pos1 = input.indexOf('-');
+  if (pos1 != -1) {
+    return input.substring(0, pos1);
   }
-  return ""; // Retorna uma string vazia se não puder encontrar a parte
+  return "";
 }
 
 String p100() {
-  if (input.length() > 0) {
-    // Usa indexOf para encontrar a posição do segundo "-"
-    int pos2 = input.lastIndexOf('-');
-
-    if (pos2 != -1) {
-      // Obtém a parte da string após o segundo "-"
-      String parte2 = input.substring(pos2 + 1);
-
-      return parte2;
-    }
+  int pos1 = input.indexOf('-');
+  int pos2 = input.indexOf('-', pos1 + 1);
+  if (pos2 != -1) {
+    return input.substring(pos1 + 1, pos2);
   }
-  return ""; // Retorna uma string vazia se não puder encontrar a parte
+  return "";
 }
-
 
 String Volume_Agua() {
-  if (input.length() > 0) {
-    // Usa indexOf para encontrar a posição do terceiro "-"
-    int pos3 = input.lastIndexOf('-');
-
-    if (pos3 != -1) {
-      // Obtém a parte da string após o terceiro "-"
-      String parte3 = input.substring(pos3 + 1);
-
-      return parte3;
-    }
+  int pos2 = input.indexOf('-');
+  int pos3 = input.lastIndexOf('-');
+  if (pos3 != -1) {
+    return input.substring( pos3+1);
   }
-  return ""; // Retorna uma string vazia se não puder encontrar a parte
+  return "";
 }
-
-
 String readSerialLine() {
   String line = "";
 
@@ -274,13 +252,12 @@ String readSerialLine() {
 
 void loop(void) {
   plantaIdeal();
-  server.handleClient();
   MDNS.update();
   
   // Leia a linha da porta serial e armazene na variável input
   input = readSerialLine();
   
-  // Chame os métodos iluminosidade, p100 e Volume_Agua para processar a mesma linha
+  // Chame os métodos iluminosidade, p100 e Volume_Agua uma vez para processar a mesma linha de entrada
   String valorIluminosidade = iluminosidade();
   String valorP100 = p100();
   String valorVolumeAgua = Volume_Agua();
@@ -291,4 +268,7 @@ void loop(void) {
   Serial.println("Volume_Agua: " + valorVolumeAgua);
   
   // Use os valores conforme necessário
+  if (valorP100 != "") {
+    server.handleClient();
+  }
 }
