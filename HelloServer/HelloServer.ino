@@ -26,7 +26,7 @@ const int capacitor= A0;
   float umidade = dht.readHumidity();
    int valorAnalogico = analogRead(pinSensorUmidadeSolo);
     float umidadeSolo = map(valorAnalogico, 0, 1023, 0, 100);
-
+int umidadeParaRegar;
 
 void handleRoot() {
   int temperature = dht.readTemperature();  // Lê a temperatura em graus Celsius
@@ -186,26 +186,32 @@ void setup(void) {
 
 void plantaIdeal(){
   int valorAnalogico = analogRead(pinSensorUmidadeSolo);
-   float temp = map(valorAnalogico, 0, 1023, 0, 100);
+   float umidadeSolo = map(valorAnalogico, 0, 1023, 0, 100);
    // 60 umidade quando a temperatura for 
    // abaixo de 60 independente da temperatura
    // apartir de uma temperatura que seria mais ou menos 40 graus ele rega ate a planta tiver usn 75% de umidade 
    // apartir de 35 graus ambiente vai aumentar a temperatura da planta ate uns 75
    //
-  if (temp<40) {
-digitalWrite(15, HIGH);
+   int temperature = dht.readTemperature(); 
 
-  }
-  else {
-digitalWrite(15, LOW);
-
-
-  }
- 
-  
-  
-  delay(1000);
+if (umidadeSolo<40){
+  umidadeParaRegar=40;
 }
+else if(temperature>35) {
+  umidadeParaRegar=25;
+}
+
+else if(p100().toInt()!= 0 && p100().toInt()>40){
+  
+umidadeParaRegar=  25;
+
+}
+if (umidadeSolo<umidadeParaRegar) {
+digitalWrite(15, HIGH);
+  }
+  else if((umidadeSolo-5)>umidadeParaRegar) {
+digitalWrite(15, LOW);
+  }  delay(1000);}
 String input; // Variável global para armazenar a leitura da porta serial
 
 
