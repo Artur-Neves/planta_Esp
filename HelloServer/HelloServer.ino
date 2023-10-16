@@ -13,8 +13,8 @@
 
 DHT dht(DHT_PIN, DHT_TYPE);
 const int pinSensorUmidadeSolo = A0;
-const char* ssid = "EMBARCADOS";
-const char* password = "deumaoito";
+const char* ssid = "Artur";
+const char* password = "12345678";
 char *token;
 
 ESP8266WebServer server(80);
@@ -40,7 +40,7 @@ String texto =  String(temperature)+ "-"+String(umidade)+"-"+ umidadedsolo+ "-"+
     Serial.println("Falha ao ler a temperatura!");
   } else {
     
-    Serial.println("lendo");
+    //Serial.println("lendo");
     digitalWrite(led, 1);
     server.send(200, "text/plain", texto);
 
@@ -208,10 +208,10 @@ umidadeParaRegar=  25;
 
 }
 if (umidadeSolo<umidadeParaRegar) {
-digitalWrite(15, HIGH);
+Serial.println("ligado");
   }
   else if((umidadeSolo-5)>umidadeParaRegar) {
-digitalWrite(15, LOW);
+Serial.println("desligado");
   }  delay(1000);}
 String input; // Variável global para armazenar a leitura da porta serial
 
@@ -251,6 +251,7 @@ String readSerialLine() {
 }
 
 void loop(void) {
+  delay(500);
   plantaIdeal();
   MDNS.update();
   
@@ -263,9 +264,9 @@ void loop(void) {
   String valorVolumeAgua = Volume_Agua();
 
   // Depuração: Verifique os valores retornados
-  Serial.println("Iluminosidade: " + valorIluminosidade);
-  Serial.println("P100: " + valorP100);
-  Serial.println("Volume_Agua: " + valorVolumeAgua);
+  //Serial.println("Iluminosidade: " + valorIluminosidade);
+  //Serial.println("P100: " + valorP100);
+  //Serial.println("Volume_Agua: " + valorVolumeAgua);
   
   // Use os valores conforme necessário
   if (valorP100 != "") {

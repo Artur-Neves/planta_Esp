@@ -10,6 +10,9 @@ const int PINO_SENSOR = 4;
 //definicao da variavel de contagem de voltas
 unsigned long contador = 0;
 
+const int soneloide = 8;
+
+
 //definicao do fator de calibracao para conversao do valor lido
 const float FATOR_CALIBRACAO = 4.5;
 
@@ -35,6 +38,8 @@ void setup() {
   pinMode(7, OUTPUT);
   pinMode(PINO_SENSOR, INPUT_PULLUP);
   pinMode(LDR, INPUT);
+  pinMode(soneloide, OUTPUT);
+  
 }
 
    
@@ -44,6 +49,8 @@ void setup() {
 
 void loop() { 
  principal();
+ ativar_valvula(lerLinnha());
+
 }
 
 float volume_agua(){
@@ -79,15 +86,15 @@ float volume_agua(){
   
 }
 bool templigada() {
-  if (horas>=4){
+  if (horas>=1){
     return false;
   }
   else {
 segundos += 1 ;
-  if (segundos==3){
+  if (segundos==6){
     segundos = 0;
     minutos+=1;
-      if(minutos==3){
+      if(minutos==10){
     minutos = 0;
       horas+=1;
   }}
@@ -98,13 +105,13 @@ segundos += 1 ;
 }
 void tempo_dia(){
   segundost += 1 ;
-  if (segundost==3){
+  if (segundost==6){
     segundost = 0;
     minutost+=1;
-      if(minutost==3){
+      if(minutost==10){
     minutost = 0;
       horast+=1;
-    if (horast== 6){
+    if (horast== 2){
       horas=0;
       segundos=0;
       minutos=0;
@@ -142,4 +149,28 @@ void contador_pulso() {
   
   contador++;
   
+}
+
+String lerLinnha() {
+  String line = "";
+
+  if (Serial.available()) {
+    line = Serial.readStringUntil('\n');
+    line.trim(); // Remove espaços em branco extras do início e do fim
+  }
+ 
+return line;
+
+
+}
+void ativar_valvula(String sensor){
+if (sensor=="ligado"){
+digitalWrite(soneloide, HIGH);
+}
+else if (sensor="desligado"){
+digitalWrite(soneloide, LOW);
+}
+else {
+
+}
 }
