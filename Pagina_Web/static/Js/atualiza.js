@@ -3,7 +3,7 @@
 // faz qa requisição
 async function getData(){
 	// await ele espera pela requisição 
-    const res = await fetch(`http://192.168.137.102/`);
+    const res = await fetch(`http://192.168.137.176/`);
     const data = await res.text();
 
     return data;
