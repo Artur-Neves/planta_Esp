@@ -3,7 +3,7 @@
 // faz qa requisição
 async function getData(){
 	// await ele espera pela requisição 
-    const res = await fetch(`http://192.168.137.176/`);
+    const res = await fetch(`http://10.42.0.60/`);
     const data = await res.text();
 
     return data;
@@ -47,7 +47,7 @@ function setStyle(element, value, borda) {
             valor=40;
             break;
             case umidadeSoloElement:
-            valor = 2;
+            valor = 75;
             break;
     
     

@@ -13,7 +13,7 @@
 
 DHT dht(DHT_PIN, DHT_TYPE);
 const int pinSensorUmidadeSolo = A0;
-const char* ssid = "iPhone de Daniel";
+const char* ssid = "Artur";
 const char* password = "12345678";
 char *token;
 
@@ -128,8 +128,7 @@ void setup(void) {
     (void)url;          // example: /root/myfile.html
     (void)client;       // the webserver tcp client connection
     (void)contentType;  // contentType(".html") => "text/html"
-    Serial.printf("A useless web hook has passed\n");
-    Serial.printf("(this hook is in 0x%08x area (401x=IRAM 402x=FLASH))\n", esp_get_program_counter());
+   
     return ESP8266WebServer::CLIENT_REQUEST_CAN_CONTINUE;
   });
 
@@ -186,6 +185,7 @@ void setup(void) {
 }
 
 void plantaIdeal(){
+  temperature = dht.readTemperature();  
   int valorAnalogico = analogRead(pinSensorUmidadeSolo);
    float umidadeSolo = map(valorAnalogico, 0, 1023, 0, 100);
    // 60 umidade quando a temperatura for 
@@ -195,10 +195,10 @@ void plantaIdeal(){
    //
    int temperature = dht.readTemperature(); 
 
-if (umidadeSolo<40){
+
   umidadeParaRegar=40;
-}
-else if(temperature>35) {
+
+if(temperature>35) {
   umidadeParaRegar=25;
 }
 
@@ -207,10 +207,10 @@ else if(p100().toInt()!= 0 && p100().toInt()>40){
 umidadeParaRegar=  25;
 
 }
-if (umidadeSolo<umidadeParaRegar) {
+if (umidadeSolo>umidadeParaRegar) {
 Serial.println("ligado");
   }
-  else if((umidadeSolo-5)>umidadeParaRegar) {
+  else if((umidadeSolo+5)<umidadeParaRegar) {
 Serial.println("desligado");
   }  delay(1000);}
 String input; // Variável global para armazenar a leitura da porta serial

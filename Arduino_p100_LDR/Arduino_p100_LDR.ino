@@ -158,19 +158,21 @@ String lerLinnha() {
     line = Serial.readStringUntil('\n');
     line.trim(); // Remove espaços em branco extras do início e do fim
   }
+  Serial.println(line);
+  if (line=="ligadoigado"){
+    line="ligado";
+  }
  
 return line;
 
 
 }
 void ativar_valvula(String sensor){
-if (sensor=="ligado"){
-digitalWrite(soneloide, HIGH);
+if (sensor=="ligado" || sensor == "ligadoligado"){
+  if(digitalRead(soneloide) != HIGH){
+digitalWrite(soneloide, HIGH);}
 }
 else if (sensor="desligado"){
 digitalWrite(soneloide, LOW);
-}
-else {
-
 }
 }
