@@ -207,10 +207,17 @@ else if(p100().toInt()!= 0 && p100().toInt()>40){
 umidadeParaRegar=  25;
 
 }
+<<<<<<< HEAD
 if (umidadeSolo>umidadeParaRegar) {
 Serial.println("ligado");
   }
   else if((umidadeSolo+5)<umidadeParaRegar) {
+=======
+if (umidadeSolo<umidadeParaRegar) {
+Serial.println("ligado");
+  }
+  else if((umidadeSolo-5)>umidadeParaRegar) {
+>>>>>>> 07f91f0ba96d81e3172f3dabcc3baeea83abb03a
 Serial.println("desligado");
   }  delay(1000);}
 String input; // Variável global para armazenar a leitura da porta serial

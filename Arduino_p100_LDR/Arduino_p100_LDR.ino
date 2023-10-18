@@ -158,21 +158,35 @@ String lerLinnha() {
     line = Serial.readStringUntil('\n');
     line.trim(); // Remove espaços em branco extras do início e do fim
   }
+<<<<<<< HEAD
   Serial.println(line);
   if (line=="ligadoigado"){
     line="ligado";
   }
+=======
+>>>>>>> 07f91f0ba96d81e3172f3dabcc3baeea83abb03a
  
 return line;
 
 
 }
 void ativar_valvula(String sensor){
+<<<<<<< HEAD
 if (sensor=="ligado" || sensor == "ligadoligado"){
   if(digitalRead(soneloide) != HIGH){
 digitalWrite(soneloide, HIGH);}
+=======
+if (sensor=="ligado"){
+digitalWrite(soneloide, HIGH);
+>>>>>>> 07f91f0ba96d81e3172f3dabcc3baeea83abb03a
 }
 else if (sensor="desligado"){
 digitalWrite(soneloide, LOW);
 }
+<<<<<<< HEAD
+=======
+else {
+
+}
+>>>>>>> 07f91f0ba96d81e3172f3dabcc3baeea83abb03a
 }
